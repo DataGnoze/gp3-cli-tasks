@@ -17,4 +17,3 @@ chams = "chams.__main__:app"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-

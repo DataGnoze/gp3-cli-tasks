@@ -1,8 +1,10 @@
+import os
+
 import openai
 import typer
 from rich import print
-from rich.panel import Panel
-import os
+from rich.console import Console
+from rich.markdown import Markdown
 
 from chams.utils import generate_temperatures, get_random_color
 
@@ -19,7 +21,7 @@ app = typer.Typer()
 def communicate_with_gpt_3(number: int, prompt: str, task: str, model="text-davinci-003"):
     """Communicate with GPT-3 using the OpenAI API"""
     temperatures = generate_temperatures(number, 0, 1)
-
+    console = Console()
     for i in range(number):
         response = openai.Completion.create(
             engine=model,
@@ -30,11 +32,13 @@ def communicate_with_gpt_3(number: int, prompt: str, task: str, model="text-davi
             frequency_penalty=0,
             presence_penalty=0
         )
-
-        print(
-            Panel(response["choices"][0]["text"], title=f"{task}-{i + 1}", expand=True,
-                  border_style=get_random_color(i))
-        )
+        markdown_template = f"# {task} - {i}"
+        iteration_color = get_random_color(i)
+        md = Markdown(markdown_template)
+        console.print(md, style=iteration_color)
+        console.print(response["choices"][0]["text"], style=iteration_color)
+        console.print()
+        console.print()
 
 
 # Define the function that will be called when the CLI is run
